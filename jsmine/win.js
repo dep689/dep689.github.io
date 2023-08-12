@@ -4,7 +4,7 @@
 
 function win() {
   var end = Date.now() + (15 * 1000);
-  var colors = ['#bb0000', '#ffffff'];
+  var colors = ["#fb5824", "#fb5824", "#ff275b", "#fca24a", "#ff772a", "#fe2525"];
   confetti({
     particleCount: 2,
     angle: 60,
