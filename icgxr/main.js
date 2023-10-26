@@ -66,9 +66,9 @@ function init() {
 
     const object = new THREE.Mesh(geometry, material);
 
-    object.position.x = Math.cos(2 * i * Math.PI / 50);
-    object.position.y = 2 + Math.sin(2 * i * Math.PI / 50);
-    object.position.z = -1;
+    object.position.x = 0.3 * Math.cos(2 * i * Math.PI / 50);
+    object.position.y = 1.5 + 0.3 * Math.sin(2 * i * Math.PI / 50);
+    object.position.z = -0.2;
 
     object.castShadow = true;
     object.receiveShadow = true;
