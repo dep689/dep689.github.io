@@ -57,18 +57,18 @@ function init() {
   scene.add(group);
 
   for (let i = 0; i < 50; i++) {
-    const geometry = new THREE.IcosahedronGeometry(0.05, 4);
+    const geometry = new THREE.IcosahedronGeometry(0.01, 4);
     const material = new THREE.MeshStandardMaterial({
-      color: 0xff0000,
+      color: 0xfff000,
       roughness: 0.7,
       metalness: 0.0
     });
 
     const object = new THREE.Mesh(geometry, material);
 
-    object.position.x = 0.3 * Math.cos(2 * i * Math.PI / 50);
-    object.position.y = 1.5 + 0.3 * Math.sin(2 * i * Math.PI / 50);
-    object.position.z = -0.2;
+    object.position.x = 0.1 * Math.cos(2 * i * Math.PI / 50);
+    object.position.y = 1.5 + 0.1 * Math.sin(2 * i * Math.PI / 50);
+    object.position.z = -0.1;
 
     object.castShadow = true;
     object.receiveShadow = true;
