@@ -26,7 +26,7 @@ function initGraph() {
     );
     object.position.x =       0.3 * Math.cos(2 * i * Math.PI / N);
     object.position.y = 1.5 + 0.3 * Math.sin(2 * i * Math.PI / N);
-    object.position.z = 0.5;
+    object.position.z = -0.5;
     graph.vertices[i] = object;
   }
 
@@ -83,7 +83,6 @@ function init() {
   renderer.setPixelRatio(devicePixelRatio);
   renderer.setSize(innerWidth, innerHeight);
   renderer.xr.enabled = true;
-  // document.body.appendChild(renderer.domElement);
   container.appendChild(renderer.domElement);
 
   container.appendChild(XRButton.createButton(renderer));
