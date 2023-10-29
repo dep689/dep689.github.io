@@ -30,6 +30,27 @@ function initGraph() {
     graph.vertices[i] = object;
   }
 
+  graph.edges = [];
+  for (let i = 0; i < graph.order; i++) {
+    for (let j = i + 1; j < graph.order; j++) {
+      if (graph.isAdjacent(i, j)) {
+        const line = new THREE.LineCurve3(
+          graph.vertices[i].position,
+          graph.vertices[j].position
+        );
+        const geometry = new THREE.TubeGeometry(line, 20, 0.01);
+        const material = new THREE.MeshNormalMaterial();
+        const object = new THREE.Mesh(geometry, material);
+
+        graph.edges.push({
+          v1: graph.vertices[i],
+          v2: graph.vertices[j],
+          object,
+        });
+      }
+    }
+  }
+
 }
 
 function init() {
@@ -54,8 +75,9 @@ function init() {
   for (let i = 0; i < graph.order; i++) {
     group.add(graph.vertices[i]);
   }
-
-  
+  for (const edge of graph.edges) {
+    group.add(edge.object);
+  }
 
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(devicePixelRatio);
@@ -80,23 +102,19 @@ function onWindowResize() {
 }
 
 function animate() {
+
+  for (const edge of graph.edges) {
+    edge.object.geometry.parameters.path.v1 = edge.v1.position;
+    edge.object.geometry.parameters.path.v2 = edge.v2.position;
+  }
   
-  renderer.setAnimationLoop(render);
+  requestAnimationFrame(animate);
+
+  render();
 
 }
 
 function render() {
-
-  // for (let i = 0; i < graph.order; i++) {
-  //   for (let j = i + 1; j < graph.order; j++) {
-  //     if (graph.isAdjacent(i, j)) {
-  //       group.add(new THREE.Mesh(
-  //         new THREE.TubeGeometry(new THREE.LineCurve3(graph.vertices[i].position, graph.vertices[j].position), 20, 0.01),
-  //         new THREE.MeshNormalMaterial(),
-  //       ));
-  //     }
-  //   }
-  // }
 
   renderer.render(scene, camera);
 
