@@ -1,247 +1,104 @@
-import * as THREE from "three";
+import * as THREE from 'three';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { XRButton } from "three/addons/webxr/XRButton.js";
-import { XRControllerModelFactory } from "three/addons/webxr/XRControllerModelFactory.js";
 
+import { IntegralCirculantGraph } from './CirculantGraph.js';
+
+let graph;
 
 let container;
-let camera, scene, renderer;
-let controller1, controller2;
-let controllerGrip1, controllerGrip2;
-
-let raycaster;
-
-const intersected = [];
-const tempMatrix = new THREE.Matrix4();
-
+let scene, camera, renderer;
 let controls, group;
 
 init();
 animate();
 
-function init() {
+function initGraph() {
+  graph = new IntegralCirculantGraph(8, [1]);
 
-  container = document.createElement('div');
-  document.body.appendChild(container);
+  const N = graph.order;
 
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x808080);
-
-  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10);
-  camera.position.set(0, 1.6, 3);
-
-  controls = new OrbitControls(camera, container);
-  controls.target.set(0, 1.6, 0);
-  controls.update();
-
-  const floorGeometry = new THREE.PlaneGeometry(6, 6);
-  const floorMaterial = new THREE.ShadowMaterial({ opacity: 0.25, blending: THREE.CustomBlending, transparent: false });
-  const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-  floor.rotation.x = - Math.PI / 2;
-  floor.receiveShadow = true;
-  scene.add(floor);
-
-  scene.add(new THREE.HemisphereLight(0xbcbcbc, 0xa5a5a5, 3));
-
-  const light = new THREE.DirectionalLight(0xffffff, 3);
-  light.position.set(0, 6, 0);
-  light.castShadow = true;
-  light.shadow.camera.top = 3;
-  light.shadow.camera.bottom = - 3;
-  light.shadow.camera.right = 3;
-  light.shadow.camera.left = - 3;
-  light.shadow.mapSize.set(4096, 4096);
-  scene.add(light);
-
-  group = new THREE.Group();
-  scene.add(group);
-
-  for (let i = 0; i < 50; i++) {
-    const geometry = new THREE.IcosahedronGeometry(0.01, 4);
-    const material = new THREE.MeshStandardMaterial({
-      color: 0xfff000,
-      roughness: 0.7,
-      metalness: 0.0
-    });
-
-    const object = new THREE.Mesh(geometry, material);
-
-    object.position.x = 0.1 * Math.cos(2 * i * Math.PI / 50);
-    object.position.y = 1.5 + 0.1 * Math.sin(2 * i * Math.PI / 50);
-    object.position.z = -0.1;
-
-    object.castShadow = true;
-    object.receiveShadow = true;
-
-    group.add(object);
-
+  graph.vertices = [];
+  for (let i = 0; i < N; i++) {
+    const object = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(0.1),
+      new THREE.MeshNormalMaterial()
+    );
+    object.position.x = Math.cos(2 * i * Math.PI / N);
+    object.position.y = Math.sin(2 * i * Math.PI / N);
+    object.position.z = 0;
+    graph.vertices[i] = object;
   }
 
-  //
+}
 
-  renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.shadowMap.enabled = true;
+function init() {
+  console.log("Hello")
+
+  initGraph();
+
+  container = document.body;
+
+  scene = new THREE.Scene();
+  
+  camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 100);
+  camera.position.set(0, 0, -2);
+  
+  controls = new OrbitControls(camera, container);
+  controls.target.set(0, 0, 0);
+  controls.update();
+  
+  group = new THREE.Group();
+  scene.add(group);
+  
+  for (let i = 0; i < graph.order; i++) {
+    group.add(graph.vertices[i]);
+  }
+
+  
+
+  renderer = new THREE.WebGLRenderer();
+  renderer.setPixelRatio(devicePixelRatio);
+  renderer.setSize(innerWidth, innerHeight);
   renderer.xr.enabled = true;
+  // document.body.appendChild(renderer.domElement);
   container.appendChild(renderer.domElement);
 
-  document.body.appendChild(XRButton.createButton(renderer));
+  container.appendChild(XRButton.createButton(renderer));
 
-  // controllers
+  window.addEventListener("resize", onWindowResize);
 
-  controller1 = renderer.xr.getController(0);
-  controller1.addEventListener('selectstart', onSelectStart);
-  controller1.addEventListener('selectend', onSelectEnd);
-  scene.add(controller1);
-
-  controller2 = renderer.xr.getController(1);
-  controller2.addEventListener('selectstart', onSelectStart);
-  controller2.addEventListener('selectend', onSelectEnd);
-  scene.add(controller2);
-
-  const controllerModelFactory = new XRControllerModelFactory();
-
-  controllerGrip1 = renderer.xr.getControllerGrip(0);
-  controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-  scene.add(controllerGrip1);
-
-  controllerGrip2 = renderer.xr.getControllerGrip(1);
-  controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
-  scene.add(controllerGrip2);
-
-  //
-
-  const geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, - 1)]);
-
-  const line = new THREE.Line(geometry);
-  line.name = 'line';
-  line.scale.z = 5;
-
-  controller1.add(line.clone());
-  controller2.add(line.clone());
-
-  raycaster = new THREE.Raycaster();
-
-  //
-
-  window.addEventListener('resize', onWindowResize);
 }
 
 function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
+
+  camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
 
-function onSelectStart(event) {
-
-  const controller = event.target;
-
-  const intersections = getIntersections(controller);
-
-  if (intersections.length > 0) {
-
-    const intersection = intersections[0];
-
-    const object = intersection.object;
-    object.material.emissive.b = 1;
-    controller.attach(object);
-
-    controller.userData.selected = object;
-
-  }
-
-  controller.userData.targetRayMode = event.data.targetRayMode;
+  renderer.setSize(innerWidth, innerHeight);
 
 }
-
-function onSelectEnd(event) {
-
-  const controller = event.target;
-
-  if (controller.userData.selected !== undefined) {
-
-    const object = controller.userData.selected;
-    object.material.emissive.b = 0;
-    group.attach(object);
-
-    controller.userData.selected = undefined;
-
-  }
-
-}
-
-function getIntersections(controller) {
-
-  controller.updateMatrixWorld();
-
-  tempMatrix.identity().extractRotation(controller.matrixWorld);
-
-  raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
-  raycaster.ray.direction.set(0, 0, - 1).applyMatrix4(tempMatrix);
-
-  return raycaster.intersectObjects(group.children, false);
-
-}
-
-function intersectObjects(controller) {
-
-  // Do not highlight in mobile-ar
-
-  if (controller.userData.targetRayMode === 'screen') return;
-
-  // Do not highlight when already selected
-
-  if (controller.userData.selected !== undefined) return;
-
-  const line = controller.getObjectByName('line');
-  const intersections = getIntersections(controller);
-
-  if (intersections.length > 0) {
-
-    const intersection = intersections[0];
-
-    const object = intersection.object;
-    object.material.emissive.r = 1;
-    intersected.push(object);
-
-    line.scale.z = intersection.distance;
-
-  } else {
-
-    line.scale.z = 5;
-
-  }
-
-}
-
-function cleanIntersected() {
-
-  while (intersected.length) {
-
-    const object = intersected.pop();
-    object.material.emissive.r = 0;
-
-  }
-
-}
-
-//
 
 function animate() {
-
+  
   renderer.setAnimationLoop(render);
 
 }
 
 function render() {
 
-  cleanIntersected();
-
-  intersectObjects(controller1);
-  intersectObjects(controller2);
+  for (let i = 0; i < graph.order; i++) {
+    for (let j = i + 1; j < graph.order; j++) {
+      if (graph.isAdjacent(i, j)) {
+        group.add(new THREE.Mesh(
+          new THREE.TubeGeometry(new THREE.LineCurve3(graph.vertices[i].position, graph.vertices[j].position), 20, 0.01),
+          new THREE.MeshNormalMaterial(),
+        ));
+      }
+    }
+  }
 
   renderer.render(scene, camera);
 
 }
+
