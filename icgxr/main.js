@@ -25,8 +25,8 @@ function initGraph() {
       new THREE.MeshNormalMaterial()
     );
     object.position.x = 0.3 * Math.cos(2 * i * Math.PI / N);
-    object.position.y = 0.3 * Math.sin(2 * i * Math.PI / N);
-    object.position.z = -0.1;
+    object.position.y = 1.5 + 0.3 * Math.sin(2 * i * Math.PI / N);
+    object.position.z = -0.2;
     graph.vertices[i] = object;
   }
 
@@ -41,7 +41,7 @@ function init() {
 
   scene = new THREE.Scene();
   
-  camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 100);
+  camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.01, 100);
   camera.position.set(0, 0, -2);
   
   controls = new OrbitControls(camera, container);
