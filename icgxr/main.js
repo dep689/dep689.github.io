@@ -24,9 +24,9 @@ function initGraph() {
       new THREE.IcosahedronGeometry(0.1),
       new THREE.MeshNormalMaterial()
     );
-    object.position.x = Math.cos(2 * i * Math.PI / N);
-    object.position.y = Math.sin(2 * i * Math.PI / N);
-    object.position.z = 0;
+    object.position.x = 0.3 * Math.cos(2 * i * Math.PI / N);
+    object.position.y = 0.3 * Math.sin(2 * i * Math.PI / N);
+    object.position.z = -0.1;
     graph.vertices[i] = object;
   }
 
