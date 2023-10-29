@@ -24,9 +24,9 @@ function initGraph() {
       new THREE.IcosahedronGeometry(0.1),
       new THREE.MeshNormalMaterial()
     );
-    object.position.x = 0.3 * Math.cos(2 * i * Math.PI / N);
+    object.position.x =       0.3 * Math.cos(2 * i * Math.PI / N);
     object.position.y = 1.5 + 0.3 * Math.sin(2 * i * Math.PI / N);
-    object.position.z = -0.2;
+    object.position.z = 0.5;
     graph.vertices[i] = object;
   }
 
@@ -42,10 +42,10 @@ function init() {
   scene = new THREE.Scene();
   
   camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.01, 100);
-  camera.position.set(0, 0, -2);
+  camera.position.set(0, 0, 0);
   
   controls = new OrbitControls(camera, container);
-  controls.target.set(0, 0, 0);
+  controls.target.set(0, 1.5, 0);
   controls.update();
   
   group = new THREE.Group();
@@ -87,16 +87,16 @@ function animate() {
 
 function render() {
 
-  for (let i = 0; i < graph.order; i++) {
-    for (let j = i + 1; j < graph.order; j++) {
-      if (graph.isAdjacent(i, j)) {
-        group.add(new THREE.Mesh(
-          new THREE.TubeGeometry(new THREE.LineCurve3(graph.vertices[i].position, graph.vertices[j].position), 20, 0.01),
-          new THREE.MeshNormalMaterial(),
-        ));
-      }
-    }
-  }
+  // for (let i = 0; i < graph.order; i++) {
+  //   for (let j = i + 1; j < graph.order; j++) {
+  //     if (graph.isAdjacent(i, j)) {
+  //       group.add(new THREE.Mesh(
+  //         new THREE.TubeGeometry(new THREE.LineCurve3(graph.vertices[i].position, graph.vertices[j].position), 20, 0.01),
+  //         new THREE.MeshNormalMaterial(),
+  //       ));
+  //     }
+  //   }
+  // }
 
   renderer.render(scene, camera);
 
