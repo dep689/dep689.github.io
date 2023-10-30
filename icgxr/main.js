@@ -118,10 +118,10 @@ function init() {
   controller1.addEventListener('selectend', onSelectEnd);
   scene.add(controller1);
 
-  controller2 = renderer.xr.getController(1);
-  controller2.addEventListener('selectstart', onSelectStart);
-  controller2.addEventListener('selectend', onSelectEnd);
-  scene.add(controller2);
+  // controller2 = renderer.xr.getController(1);
+  // controller2.addEventListener('selectstart', onSelectStart);
+  // controller2.addEventListener('selectend', onSelectEnd);
+  // scene.add(controller2);
 
   // const controllerModelFactory = new XRControllerModelFactory();
 
@@ -142,7 +142,7 @@ function init() {
   line.scale.z = 5;
 
   controller1.add(line.clone());
-  controller2.add(line.clone());
+  // controller2.add(line.clone());
 
   raycaster = new THREE.Raycaster();
 
@@ -279,7 +279,7 @@ function render() {
   cleanIntersected();
 
   intersectObjects(controller1);
-  intersectObjects(controller2);
+  // intersectObjects(controller2);
 
   renderer.render(scene, camera);
 
@@ -289,7 +289,7 @@ function updateEdges() {
   for (let i = 0; i < graph.size; i++) {
     const edge = graph.edges[i];
 
-    let v1 = edge.v1;
+    let v1 = controller1;// edge.v1;
     let v2 = edge.v2;
 
     const distance = v1.position.distanceTo(v2.position);
