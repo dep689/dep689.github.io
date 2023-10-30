@@ -36,8 +36,8 @@ function initGraph() {
   for (let i = 0; i < graph.order; i++) {
     graph.vertices[i] = new THREE.Mesh(vertexGeometry, vertexMaterial);
     graph.vertices[i].position.x = 0.3 * Math.cos(2 * i * Math.PI / graph.order);
-    graph.vertices[i].position.y = 1 + 0.3 * Math.sin(2 * i * Math.PI / graph.order);
-    graph.vertices[i].position.z = -1;
+    graph.vertices[i].position.y = 1.5 + 0.3 * Math.sin(2 * i * Math.PI / graph.order);
+    graph.vertices[i].position.z = -0.6;
     graph.vertices[i].name = "vertex";
   }
 
@@ -50,14 +50,9 @@ function initGraph() {
 
       if (graph.isAdjacent(i, j)) {
 
-        const v1 = graph.vertices[i].position;
-        const v2 = graph.vertices[j].position;
+        const v1 = graph.vertices[i];
+        const v2 = graph.vertices[j];
         const object = new THREE.Mesh(edgeGeometry, edgeMaterial);
-
-        // 順番変えるとバグる
-        object.scale.z = v1.distanceTo(v2);
-        object.position.set((v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2);
-        object.lookAt(v1);
 
         object.name = "edge";
 
@@ -65,6 +60,7 @@ function initGraph() {
       }
     }
   }
+  updateEdges();
 
   graph.size = graph.edges.length;
 
@@ -81,7 +77,7 @@ function init() {
   scene.background = new THREE.Color(0x808080);
 
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-  camera.position.set(0, 1.6, 3);
+  camera.position.set(0, 1.6, 0);
 
   document.body.appendChild(XRButton.createButton(renderer));
   
@@ -290,7 +286,7 @@ function intersectObjects(controller) {
   if (intersections.length > 0) {
 
     const intersection = intersections[0];
-    
+
     const object = intersection.object;
     // object.material.emissive.r = 1;
     intersected.push(object);
@@ -344,14 +340,13 @@ function updateEdges() {
   for (let i = 0; i < graph.size; i++) {
     const edge = graph.edges[i];
 
-    const distance = edge.v1.distanceTo(edge.v2);
+    const distance = edge.v1.position.distanceTo(edge.v2.position);
         
-    edge.object.lookAt(edge.v1);
     edge.object.scale.z = distance;
     edge.object.position.set(
-      (edge.v1.x + edge.v2.x) / 2,
-      (edge.v1.y + edge.v2.y) / 2,
-      (edge.v1.z + edge.v2.z) / 2,
-    );
+      (edge.v1.position.x + edge.v2.position.x) / 2,
+      (edge.v1.position.y + edge.v2.position.y) / 2,
+      (edge.v1.position.z + edge.v2.position.z) / 2);
+    edge.object.lookAt(edge.v1.position);
   }
 }
