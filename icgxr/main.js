@@ -61,7 +61,7 @@ function initGraph() {
 
 function init() {
 
-  initGraph();
+  // initGraph();
 
   container = document.createElement("div");
   document.body.appendChild(container);
@@ -71,14 +71,6 @@ function init() {
 
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
   camera.position.set(0, 1.6, 3);
-  
-  
-  renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.shadowMap.enabled = true;
-  renderer.xr.enabled = true;
-  container.appendChild(renderer.domElement);
 
   document.body.appendChild(XRButton.createButton(renderer));
   
@@ -156,26 +148,49 @@ function init() {
 
   }
 
+  //
+
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.xr.enabled = true;
+  container.appendChild(renderer.domElement);
+
+  document.body.appendChild(XRButton.createButton(renderer));
+
   // コントローラー
   controller1 = renderer.xr.getController(0);
-  controller1.addEventListener("selectstart", onSelectStart);
-  controller1.addEventListener("selectend", onSelectEnd);
+  controller1.addEventListener('selectstart', onSelectStart);
+  controller1.addEventListener('selectend', onSelectEnd);
   scene.add(controller1);
-  
+
+  controller2 = renderer.xr.getController(1);
+  controller2.addEventListener('selectstart', onSelectStart);
+  controller2.addEventListener('selectend', onSelectEnd);
+  scene.add(controller2);
+
   const controllerModelFactory = new XRControllerModelFactory();
 
   controllerGrip1 = renderer.xr.getControllerGrip(0);
   controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
   scene.add(controllerGrip1);
-  
+
+  controllerGrip2 = renderer.xr.getControllerGrip(1);
+  controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+  scene.add(controllerGrip2);
+
+  //
+
   const geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, - 1)]);
-  
+
   const line = new THREE.Line(geometry);
   line.name = 'line';
   line.scale.z = 5;
 
   controller1.add(line.clone());
-  
+  controller2.add(line.clone());
+
   raycaster = new THREE.Raycaster();
 
   //
@@ -286,28 +301,29 @@ function cleanIntersected() {
 
 function animate() {
 
-  for (let i = 0; i < graph.order; i++) {
-    graph.vertices[i].position.x += 0.01 * (Math.random() - 0.5);
-    graph.vertices[i].position.y += 0.01 * (Math.random() - 0.5);
-    graph.vertices[i].position.z += 0.01 * (Math.random() - 0.5);
-  }
+  // for (let i = 0; i < graph.order; i++) {
+  //   graph.vertices[i].position.x += 0.01 * (Math.random() - 0.5);
+  //   graph.vertices[i].position.y += 0.01 * (Math.random() - 0.5);
+  //   graph.vertices[i].position.z += 0.01 * (Math.random() - 0.5);
+  // }
 
-  for (let i = 0; i < graph.size; i++) {
-    const edge = graph.edges[i];
+  // for (let i = 0; i < graph.size; i++) {
+  //   const edge = graph.edges[i];
 
-    const distance = edge.v1.distanceTo(edge.v2);
+  //   const distance = edge.v1.distanceTo(edge.v2);
         
-    edge.object.lookAt(edge.v1);
-    edge.object.scale.z = distance;
-    edge.object.position.set(
-      (edge.v1.x + edge.v2.x) / 2,
-      (edge.v1.y + edge.v2.y) / 2,
-      (edge.v1.z + edge.v2.z) / 2,
-    );
-  }
+  //   edge.object.lookAt(edge.v1);
+  //   edge.object.scale.z = distance;
+  //   edge.object.position.set(
+  //     (edge.v1.x + edge.v2.x) / 2,
+  //     (edge.v1.y + edge.v2.y) / 2,
+  //     (edge.v1.z + edge.v2.z) / 2,
+  //   );
+  // }
   
-  requestAnimationFrame(animate);
-  render();
+  renderer.setAnimationLoop(render);
+  // requestAnimationFrame(animate);
+  // render();
 
 }
 
@@ -316,6 +332,7 @@ function render() {
   cleanIntersected();
 
   intersectObjects(controller1);
+  intersectObjects(controller2);
 
   renderer.render(scene, camera);
 
