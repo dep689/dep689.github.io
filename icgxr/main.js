@@ -262,12 +262,6 @@ function cleanIntersected() {
 
 function animate() {
 
-  // for (let i = 0; i < graph.order; i++) {
-  //   graph.vertices[i].position.x += 0.01 * (Math.random() - 0.5);
-  //   graph.vertices[i].position.y += 0.01 * (Math.random() - 0.5);
-  //   graph.vertices[i].position.z += 0.01 * (Math.random() - 0.5);
-  // }
-
   updateEdges();
   
   render();
@@ -286,17 +280,18 @@ function render() {
 }
 
 function updateEdges() {
+
   for (let i = 0; i < graph.size; i++) {
+
     const edge = graph.edges[i];
 
     let v1 = edge.v1;
     let v2 = edge.v2;
 
     if (v1 === controller2.userData.selected) {
-      v1 = controller2.getObjectByName("vertex");
-    }
-    if (v2 === controller2.userData.selected) {
-      v2 = controller2.getObjectByName("vertex");
+      const line = controller2.getObjectByName("line");
+      const position = line.position;
+      v1 = { position };
     }
 
     const distance = v1.position.distanceTo(v2.position);
@@ -309,5 +304,6 @@ function updateEdges() {
       (v1.position.y + v2.position.y) / 2,
       (v1.position.z + v2.position.z) / 2);
     edge.object.lookAt(v1.position);
+
   }
 }
