@@ -36,8 +36,8 @@ function initGraph() {
   for (let i = 0; i < graph.order; i++) {
     graph.vertices[i] = new THREE.Mesh(vertexGeometry, vertexMaterial);
     graph.vertices[i].position.x = 0.3 * Math.cos(2 * i * Math.PI / graph.order);
-    graph.vertices[i].position.y = 1.6 + 0.3 * Math.sin(2 * i * Math.PI / graph.order);
-    graph.vertices[i].position.z = -0.5;
+    graph.vertices[i].position.y = 0.3 * Math.sin(2 * i * Math.PI / graph.order);
+    graph.vertices[i].position.z = -0.3;
   }
 
   // 辺
@@ -67,7 +67,8 @@ function init() {
   scene.background = new THREE.Color(0x808080);
 
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-  camera.position.set(0, 1.6, 0);
+  camera.position.set(0, 0, 0);
+  
   
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -78,7 +79,7 @@ function init() {
   document.body.appendChild(XRButton.createButton(renderer));
   
   controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 1.6, -1);
+  controls.target.set(0, 0, -1);
   controls.update();
   
   group = new THREE.Group();
