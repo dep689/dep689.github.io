@@ -94,7 +94,7 @@ function init() {
   scene.add(edges);
 
   for (let i = 0; i < graph.order; i++) {
-    group.add(graph.vertices[i]);
+    group.attach(graph.vertices[i]);
   }
 
   for (let i = 0; i < graph.size; i++) {
