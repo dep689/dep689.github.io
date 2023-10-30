@@ -116,9 +116,9 @@ function init() {
     group.add(graph.vertices[i]);
   }
 
-  // for (let i = 0; i < graph.size; i++) {
-  //   group.add(graph.edges[i].object);
-  // }
+  for (let i = 0; i < graph.size; i++) {
+    group.add(graph.edges[i].object);
+  }
 
   
 
@@ -321,19 +321,7 @@ function animate() {
   //   graph.vertices[i].position.z += 0.01 * (Math.random() - 0.5);
   // }
 
-  // for (let i = 0; i < graph.size; i++) {
-  //   const edge = graph.edges[i];
-
-  //   const distance = edge.v1.distanceTo(edge.v2);
-        
-  //   edge.object.lookAt(edge.v1);
-  //   edge.object.scale.z = distance;
-  //   edge.object.position.set(
-  //     (edge.v1.x + edge.v2.x) / 2,
-  //     (edge.v1.y + edge.v2.y) / 2,
-  //     (edge.v1.z + edge.v2.z) / 2,
-  //   );
-  // }
+  updateEdges();
   
   render();
 
@@ -348,4 +336,20 @@ function render() {
 
   renderer.render(scene, camera);
 
+}
+
+function updateEdges() {
+  for (let i = 0; i < graph.size; i++) {
+    const edge = graph.edges[i];
+
+    const distance = edge.v1.distanceTo(edge.v2);
+        
+    edge.object.lookAt(edge.v1);
+    edge.object.scale.z = distance;
+    edge.object.position.set(
+      (edge.v1.x + edge.v2.x) / 2,
+      (edge.v1.y + edge.v2.y) / 2,
+      (edge.v1.z + edge.v2.z) / 2,
+    );
+  }
 }
