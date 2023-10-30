@@ -286,8 +286,12 @@ function updateEdges() {
 
     const edge = graph.edges[i];
 
-    let p1 = group.worldToLocal(edge.v1.position);
-    let p2 = group.worldToLocal(edge.v2.position);
+    let p1 = edge.v1.position;
+    let p2 = edge.v2.position;
+
+    if (edge.v1 === controller2.userData.selected) {
+      p1.add(controller2.position);
+    }
 
     edge.object.scale.z = p1.distanceTo(p2);
 
