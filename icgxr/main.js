@@ -37,7 +37,7 @@ function initGraph() {
     graph.vertices[i] = new THREE.Mesh(vertexGeometry, vertexMaterial);
     graph.vertices[i].position.x = 0.3 * Math.cos(2 * i * Math.PI / graph.order);
     graph.vertices[i].position.y = 1 + 0.3 * Math.sin(2 * i * Math.PI / graph.order);
-    graph.vertices[i].position.z = 0;
+    graph.vertices[i].position.z = -0.3;
   }
 
   // 辺
@@ -163,7 +163,7 @@ function init() {
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.shadowMap.enabled = true;
+  // renderer.shadowMap.enabled = true;
   renderer.xr.enabled = true;
   container.appendChild(renderer.domElement);
 
@@ -232,7 +232,7 @@ function onSelectStart(event) {
     const intersection = intersections[0];
 
     const object = intersection.object;
-    object.material.emissive.b = 1;
+    // object.material.emissive.b = 1;
     controller.attach(object);
 
     controller.userData.selected = object;
@@ -250,7 +250,7 @@ function onSelectEnd(event) {
   if (controller.userData.selected !== undefined) {
 
     const object = controller.userData.selected;
-    object.material.emissive.b = 0;
+    // object.material.emissive.b = 0;
     group.attach(object);
 
     controller.userData.selected = undefined;
