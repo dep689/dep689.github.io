@@ -287,7 +287,7 @@ function intersectObjects(controller) {
 
   const line = controller.getObjectByName('line');
   const intersections = getIntersections(controller);
-  const intersection = intersections.find(item => item.obj.name === "vertex");
+  const intersection = intersections.find(item => item.object.name === "vertex");
 
   if (intersection) {
 
