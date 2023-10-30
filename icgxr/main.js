@@ -158,6 +158,7 @@ function init() {
 
   console.log(group);
   console.log(edges);
+  console.log(controller2);
 }
 
 function onWindowResize() {
@@ -289,8 +290,7 @@ function updateEdges() {
     let v2 = edge.v2;
 
     if (v1 === controller2.userData.selected) {
-      const line = controller2.getObjectByName("line");
-      const position = line.position;
+      const position = v1.getWorldPosition();
       v1 = { position };
     }
 
