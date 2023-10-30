@@ -229,10 +229,9 @@ function onSelectStart(event) {
   const controller = event.target;
 
   const intersections = getIntersections(controller);
+  const intersection = intersections.find(item => item.object.name === "vertex");
 
-  if (intersections.length > 0) {
-
-    const intersection = intersections[0];
+  if (intersection) {
 
     const object = intersection.object;
     // object.material.emissive.b = 1;
@@ -287,10 +286,11 @@ function intersectObjects(controller) {
 
   const line = controller.getObjectByName('line');
   const intersections = getIntersections(controller);
-  const intersection = intersections.find(item => item.object.name === "vertex");
 
-  if (intersection) {
+  if (intersections.length > 0) {
 
+    const intersection = intersections[0];
+    
     const object = intersection.object;
     // object.material.emissive.r = 1;
     intersected.push(object);
