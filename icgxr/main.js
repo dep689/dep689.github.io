@@ -15,7 +15,7 @@ let raycaster;
 const intersected = [];
 const tempMatrix = new THREE.Matrix4();
 
-let group;
+let group, edges;
 
 let graph;
 
@@ -86,76 +86,20 @@ function init() {
   // controls.update();
 
   //
-
-  // const floorGeometry = new THREE.PlaneGeometry(6, 6);
-  // const floorMaterial = new THREE.ShadowMaterial({ opacity: 0.25, blending: THREE.CustomBlending, transparent: false });
-  // const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-  // floor.rotation.x = - Math.PI / 2;
-  // floor.receiveShadow = true;
-  // scene.add(floor);
-
-  // scene.add(new THREE.HemisphereLight(0xbcbcbc, 0xa5a5a5, 3));
-
-  // const light = new THREE.DirectionalLight(0xffffff, 3);
-  // light.position.set(0, 6, 0);
-  // light.castShadow = true;
-  // light.shadow.camera.top = 3;
-  // light.shadow.camera.bottom = - 3;
-  // light.shadow.camera.right = 3;
-  // light.shadow.camera.left = - 3;
-  // light.shadow.mapSize.set(4096, 4096);
-  // scene.add(light);
-
-  //
   
   group = new THREE.Group();
   scene.add(group);
+
+  edges = new THREE.Group();
+  scene.add(edges);
 
   for (let i = 0; i < graph.order; i++) {
     group.add(graph.vertices[i]);
   }
 
   for (let i = 0; i < graph.size; i++) {
-    group.add(graph.edges[i].object);
+    edges.add(graph.edges[i].object);
   }
-
-  
-
-  // const geometries = [
-  //   new THREE.BoxGeometry(0.2, 0.2, 0.2),
-  //   new THREE.ConeGeometry(0.2, 0.2, 64),
-  //   new THREE.CylinderGeometry(0.2, 0.2, 0.2, 64),
-  //   new THREE.IcosahedronGeometry(0.2, 8),
-  //   new THREE.TorusGeometry(0.2, 0.04, 64, 32)
-  // ];
-
-  // for (let i = 0; i < 50; i++) {
-
-  //   const geometry = geometries[Math.floor(Math.random() * geometries.length)];
-  //   const material = new THREE.MeshStandardMaterial({
-  //     color: Math.random() * 0xffffff,
-  //     roughness: 0.7,
-  //     metalness: 0.0
-  //   });
-
-  //   const object = new THREE.Mesh(geometry, material);
-
-  //   object.position.x = Math.random() * 4 - 2;
-  //   object.position.y = Math.random() * 2;
-  //   object.position.z = Math.random() * 4 - 2;
-
-  //   object.rotation.x = Math.random() * 2 * Math.PI;
-  //   object.rotation.y = Math.random() * 2 * Math.PI;
-  //   object.rotation.z = Math.random() * 2 * Math.PI;
-
-  //   object.scale.setScalar(Math.random() + 0.5);
-
-  //   // object.castShadow = true;
-  //   // object.receiveShadow = true;
-
-  //   group.add(object);
-
-  // }
 
   //
 
@@ -343,14 +287,7 @@ function updateEdges() {
     let v1 = edge.v1;
     let v2 = edge.v2;
 
-    if (v1 === controller1.userData.selected) {
-      v1 = controller1.children.find(object => object.name === "line"); 
-    }
-    if (v1 === controller2.userData.selected) {
-      v1 = controller2.children.find(object => object.name === "line");
-    }
-
-    const distance = edge.v1.position.distanceTo(edge.v2.position);
+    const distance = v1.position.distanceTo(v2.position);
 
     edge.object.scale.z = distance;
 
