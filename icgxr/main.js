@@ -38,6 +38,7 @@ function initGraph() {
     graph.vertices[i].position.x = 0.3 * Math.cos(2 * i * Math.PI / graph.order);
     graph.vertices[i].position.y = 1 + 0.3 * Math.sin(2 * i * Math.PI / graph.order);
     graph.vertices[i].position.z = -1;
+    graph.vertices[i].name = "vertex";
   }
 
   // 辺
@@ -57,6 +58,8 @@ function initGraph() {
         object.scale.z = v1.distanceTo(v2);
         object.position.set((v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2);
         object.lookAt(v1);
+
+        object.name = "edge";
 
         graph.edges.push({ v1, v2, object });
       }
@@ -284,10 +287,9 @@ function intersectObjects(controller) {
 
   const line = controller.getObjectByName('line');
   const intersections = getIntersections(controller);
+  const intersection = intersections.find(item => item.obj.name === "vertex");
 
-  if (intersections.length > 0) {
-
-    const intersection = intersections[0];
+  if (intersection) {
 
     const object = intersection.object;
     // object.material.emissive.r = 1;
