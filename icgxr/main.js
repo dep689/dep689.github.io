@@ -321,9 +321,9 @@ function animate() {
   //   );
   // }
   
-  renderer.setAnimationLoop(render);
-  // requestAnimationFrame(animate);
-  // render();
+  // renderer.setAnimationLoop(render);
+  requestAnimationFrame(animate);
+  render();
 
 }
 
