@@ -37,7 +37,7 @@ function initGraph() {
     graph.vertices[i] = new THREE.Mesh(vertexGeometry, vertexMaterial);
     graph.vertices[i].position.x = 0.3 * Math.cos(2 * i * Math.PI / graph.order);
     graph.vertices[i].position.y = 1.6 + 0.3 * Math.sin(2 * i * Math.PI / graph.order);
-    graph.vertices[i].position.z = -1;
+    graph.vertices[i].position.z = -0.5;
   }
 
   // 辺
