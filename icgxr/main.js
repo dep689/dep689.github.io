@@ -116,9 +116,9 @@ function init() {
     group.add(graph.vertices[i]);
   }
 
-  for (let i = 0; i < graph.size; i++) {
-    group.add(graph.edges[i].object);
-  }
+  // for (let i = 0; i < graph.size; i++) {
+  //   group.add(graph.edges[i].object);
+  // }
 
   
 
