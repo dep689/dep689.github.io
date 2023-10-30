@@ -46,15 +46,23 @@ function initGraph() {
   const edgeMaterial = new THREE.MeshNormalMaterial();
   for (let i = 0; i < graph.order; i++) {
     for (let j = i + 1; j < graph.order; j++) {
+
       if (graph.isAdjacent(i, j)) {
-        graph.edges.push({
-          v1: graph.vertices[i].position,
-          v2: graph.vertices[j].position,
-          object: new THREE.Mesh(edgeGeometry, edgeMaterial),
-        })
+
+        const v1 = graph.vertices[i].position;
+        const v2 = graph.vertices[j].position;
+        const object = new THREE.Mesh(edgeGeometry, edgeMaterial);
+
+        // 順番変えるとバグる
+        object.scale.z = v1.distanceTo(v2);
+        object.position.set((v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2);
+        object.lookAt(v1);
+
+        graph.edges.push({ v1, v2, object });
       }
     }
   }
+
   graph.size = graph.edges.length;
 
 }
@@ -80,24 +88,24 @@ function init() {
 
   //
 
-  const floorGeometry = new THREE.PlaneGeometry(6, 6);
-  const floorMaterial = new THREE.ShadowMaterial({ opacity: 0.25, blending: THREE.CustomBlending, transparent: false });
-  const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-  floor.rotation.x = - Math.PI / 2;
-  floor.receiveShadow = true;
-  scene.add(floor);
+  // const floorGeometry = new THREE.PlaneGeometry(6, 6);
+  // const floorMaterial = new THREE.ShadowMaterial({ opacity: 0.25, blending: THREE.CustomBlending, transparent: false });
+  // const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  // floor.rotation.x = - Math.PI / 2;
+  // floor.receiveShadow = true;
+  // scene.add(floor);
 
-  scene.add(new THREE.HemisphereLight(0xbcbcbc, 0xa5a5a5, 3));
+  // scene.add(new THREE.HemisphereLight(0xbcbcbc, 0xa5a5a5, 3));
 
-  const light = new THREE.DirectionalLight(0xffffff, 3);
-  light.position.set(0, 6, 0);
-  light.castShadow = true;
-  light.shadow.camera.top = 3;
-  light.shadow.camera.bottom = - 3;
-  light.shadow.camera.right = 3;
-  light.shadow.camera.left = - 3;
-  light.shadow.mapSize.set(4096, 4096);
-  scene.add(light);
+  // const light = new THREE.DirectionalLight(0xffffff, 3);
+  // light.position.set(0, 6, 0);
+  // light.castShadow = true;
+  // light.shadow.camera.top = 3;
+  // light.shadow.camera.bottom = - 3;
+  // light.shadow.camera.right = 3;
+  // light.shadow.camera.left = - 3;
+  // light.shadow.mapSize.set(4096, 4096);
+  // scene.add(light);
 
   //
   
@@ -111,6 +119,8 @@ function init() {
   for (let i = 0; i < graph.size; i++) {
     group.add(graph.edges[i].object);
   }
+
+  
 
   // const geometries = [
   //   new THREE.BoxGeometry(0.2, 0.2, 0.2),
@@ -311,19 +321,19 @@ function animate() {
   //   graph.vertices[i].position.z += 0.01 * (Math.random() - 0.5);
   // }
 
-  for (let i = 0; i < graph.size; i++) {
-    const edge = graph.edges[i];
+  // for (let i = 0; i < graph.size; i++) {
+  //   const edge = graph.edges[i];
 
-    const distance = edge.v1.distanceTo(edge.v2);
+  //   const distance = edge.v1.distanceTo(edge.v2);
         
-    edge.object.lookAt(edge.v1);
-    edge.object.scale.z = distance;
-    edge.object.position.set(
-      (edge.v1.x + edge.v2.x) / 2,
-      (edge.v1.y + edge.v2.y) / 2,
-      (edge.v1.z + edge.v2.z) / 2,
-    );
-  }
+  //   edge.object.lookAt(edge.v1);
+  //   edge.object.scale.z = distance;
+  //   edge.object.position.set(
+  //     (edge.v1.x + edge.v2.x) / 2,
+  //     (edge.v1.y + edge.v2.y) / 2,
+  //     (edge.v1.z + edge.v2.z) / 2,
+  //   );
+  // }
   
   render();
 
