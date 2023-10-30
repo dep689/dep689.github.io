@@ -282,10 +282,9 @@ function intersectObjects(controller) {
 
   const line = controller.getObjectByName('line');
   const intersections = getIntersections(controller);
+  const intersection = intersections.find(item => item.object.name === "vertex");
 
-  if (intersections.length > 0) {
-
-    const intersection = intersections[0];
+  if (intersection) {
 
     const object = intersection.object;
     // object.material.emissive.r = 1;
@@ -340,13 +339,25 @@ function updateEdges() {
   for (let i = 0; i < graph.size; i++) {
     const edge = graph.edges[i];
 
+    let v1 = edge.v1;
+    let v2 = edge.v2;
+
+    if (v1 === controller1.userData.selected) {
+      v1 = v1.parent;
+    }
+    if (v2 === controller1.userData.selected) {
+      v2 = v2.parent;
+    }
+
     const distance = edge.v1.position.distanceTo(edge.v2.position);
-        
+
     edge.object.scale.z = distance;
+
+    // 順番変えるとバグる
     edge.object.position.set(
-      (edge.v1.position.x + edge.v2.position.x) / 2,
-      (edge.v1.position.y + edge.v2.position.y) / 2,
-      (edge.v1.position.z + edge.v2.position.z) / 2);
-    edge.object.lookAt(edge.v1.position);
+      (v1.position.x + v2.position.x) / 2,
+      (v1.position.y + v2.position.y) / 2,
+      (v1.position.z + v2.position.z) / 2);
+    edge.object.lookAt(v1.position);
   }
 }
