@@ -156,8 +156,8 @@ function init() {
 
   //
 
-  console.log(group.position);
-  console.log(controller1);
+  console.log(group);
+  console.log(edges);
 }
 
 function onWindowResize() {
@@ -293,10 +293,10 @@ function updateEdges() {
     let v2 = edge.v2;
 
     if (v1 === controller2.userData.selected) {
-      v1 = controller2.getObjectByName("line");
+      v1 = controller2.getObjectByName("vertex");
     }
     if (v2 === controller2.userData.selected) {
-      v2 = controller2.getObjectByName("line");
+      v2 = controller2.getObjectByName("vertex");
     }
 
     const distance = v1.position.distanceTo(v2.position);
