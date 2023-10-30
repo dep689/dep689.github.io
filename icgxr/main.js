@@ -81,9 +81,9 @@ function init() {
 
   document.body.appendChild(XRButton.createButton(renderer));
   
-  controls = new OrbitControls(camera, container);
-  controls.target.set(0, 1.6, 0);
-  controls.update();
+  // controls = new OrbitControls(camera, container);
+  // controls.target.set(0, 1.6, 0);
+  // controls.update();
 
   //
 
@@ -344,10 +344,10 @@ function updateEdges() {
     let v2 = edge.v2;
 
     if (v1 === controller1.userData.selected) {
-      v1 = v1.parent;
+      v1 = controller1;//v1.parent;
     }
     if (v2 === controller1.userData.selected) {
-      v2 = v2.parent;
+      v2 = controller1; //v2.parent;
     }
 
     const distance = edge.v1.position.distanceTo(edge.v2.position);
