@@ -286,23 +286,14 @@ function updateEdges() {
 
     const edge = graph.edges[i];
 
-    let v1 = edge.v1;
-    let v2 = edge.v2;
+    let p1 = group.worldToLocal(edge.v1.position);
+    let p2 = group.worldToLocal(edge.v2.position);
 
-    if (v1 === controller2.userData.selected) {
-      v1.getWorldPosition(v1.position);
-    }
-
-    const distance = v1.position.distanceTo(v2.position);
-
-    edge.object.scale.z = distance;
+    edge.object.scale.z = p1.distanceTo(p2);
 
     // 順番変えるとバグる
-    edge.object.position.set(
-      (v1.position.x + v2.position.x) / 2,
-      (v1.position.y + v2.position.y) / 2,
-      (v1.position.z + v2.position.z) / 2);
-    edge.object.lookAt(v1.position);
+    edge.object.position.addVectors(p1, p2).multiplyScalar(0.5);
+    edge.object.lookAt(p1);
 
   }
 }
