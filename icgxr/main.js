@@ -290,8 +290,7 @@ function updateEdges() {
     let v2 = edge.v2;
 
     if (v1 === controller2.userData.selected) {
-      const position = v1.getWorldPosition();
-      v1 = { position };
+      v1.getWorldPosition(v1.position);
     }
 
     const distance = v1.position.distanceTo(v2.position);
