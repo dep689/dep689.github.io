@@ -344,7 +344,10 @@ function updateEdges() {
     let v2 = edge.v2;
 
     if (v1 === controller1.userData.selected) {
-      v1 = controller1.children.find(object => object.name === "vertex"); 
+      v1 = controller1.children.find(object => object.name === "line"); 
+    }
+    if (v1 === controller2.userData.selected) {
+      v1 = controller2.children.find(object => object.name === "line");
     }
 
     const distance = edge.v1.position.distanceTo(edge.v2.position);
