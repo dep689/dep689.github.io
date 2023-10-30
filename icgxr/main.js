@@ -61,7 +61,7 @@ function initGraph() {
 
 function init() {
 
-  // initGraph();
+  initGraph();
 
   container = document.createElement("div");
   document.body.appendChild(container);
@@ -104,49 +104,49 @@ function init() {
   group = new THREE.Group();
   scene.add(group);
 
-  // for (let i = 0; i < graph.order; i++) {
-  //   group.add(graph.vertices[i]);
-  // }
-
-  // for (let i = 0; i < graph.size; i++) {
-  //   group.add(graph.edges[i].object);
-  // }
-
-  const geometries = [
-    new THREE.BoxGeometry(0.2, 0.2, 0.2),
-    new THREE.ConeGeometry(0.2, 0.2, 64),
-    new THREE.CylinderGeometry(0.2, 0.2, 0.2, 64),
-    new THREE.IcosahedronGeometry(0.2, 8),
-    new THREE.TorusGeometry(0.2, 0.04, 64, 32)
-  ];
-
-  for (let i = 0; i < 50; i++) {
-
-    const geometry = geometries[Math.floor(Math.random() * geometries.length)];
-    const material = new THREE.MeshStandardMaterial({
-      color: Math.random() * 0xffffff,
-      roughness: 0.7,
-      metalness: 0.0
-    });
-
-    const object = new THREE.Mesh(geometry, material);
-
-    object.position.x = Math.random() * 4 - 2;
-    object.position.y = Math.random() * 2;
-    object.position.z = Math.random() * 4 - 2;
-
-    object.rotation.x = Math.random() * 2 * Math.PI;
-    object.rotation.y = Math.random() * 2 * Math.PI;
-    object.rotation.z = Math.random() * 2 * Math.PI;
-
-    object.scale.setScalar(Math.random() + 0.5);
-
-    object.castShadow = true;
-    object.receiveShadow = true;
-
-    group.add(object);
-
+  for (let i = 0; i < graph.order; i++) {
+    group.add(graph.vertices[i]);
   }
+
+  for (let i = 0; i < graph.size; i++) {
+    group.add(graph.edges[i].object);
+  }
+
+  // const geometries = [
+  //   new THREE.BoxGeometry(0.2, 0.2, 0.2),
+  //   new THREE.ConeGeometry(0.2, 0.2, 64),
+  //   new THREE.CylinderGeometry(0.2, 0.2, 0.2, 64),
+  //   new THREE.IcosahedronGeometry(0.2, 8),
+  //   new THREE.TorusGeometry(0.2, 0.04, 64, 32)
+  // ];
+
+  // for (let i = 0; i < 50; i++) {
+
+  //   const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+  //   const material = new THREE.MeshStandardMaterial({
+  //     color: Math.random() * 0xffffff,
+  //     roughness: 0.7,
+  //     metalness: 0.0
+  //   });
+
+  //   const object = new THREE.Mesh(geometry, material);
+
+  //   object.position.x = Math.random() * 4 - 2;
+  //   object.position.y = Math.random() * 2;
+  //   object.position.z = Math.random() * 4 - 2;
+
+  //   object.rotation.x = Math.random() * 2 * Math.PI;
+  //   object.rotation.y = Math.random() * 2 * Math.PI;
+  //   object.rotation.z = Math.random() * 2 * Math.PI;
+
+  //   object.scale.setScalar(Math.random() + 0.5);
+
+  //   object.castShadow = true;
+  //   object.receiveShadow = true;
+
+  //   group.add(object);
+
+  // }
 
   //
 
@@ -301,25 +301,25 @@ function cleanIntersected() {
 
 function animate() {
 
-  // for (let i = 0; i < graph.order; i++) {
-  //   graph.vertices[i].position.x += 0.01 * (Math.random() - 0.5);
-  //   graph.vertices[i].position.y += 0.01 * (Math.random() - 0.5);
-  //   graph.vertices[i].position.z += 0.01 * (Math.random() - 0.5);
-  // }
+  for (let i = 0; i < graph.order; i++) {
+    graph.vertices[i].position.x += 0.01 * (Math.random() - 0.5);
+    graph.vertices[i].position.y += 0.01 * (Math.random() - 0.5);
+    graph.vertices[i].position.z += 0.01 * (Math.random() - 0.5);
+  }
 
-  // for (let i = 0; i < graph.size; i++) {
-  //   const edge = graph.edges[i];
+  for (let i = 0; i < graph.size; i++) {
+    const edge = graph.edges[i];
 
-  //   const distance = edge.v1.distanceTo(edge.v2);
+    const distance = edge.v1.distanceTo(edge.v2);
         
-  //   edge.object.lookAt(edge.v1);
-  //   edge.object.scale.z = distance;
-  //   edge.object.position.set(
-  //     (edge.v1.x + edge.v2.x) / 2,
-  //     (edge.v1.y + edge.v2.y) / 2,
-  //     (edge.v1.z + edge.v2.z) / 2,
-  //   );
-  // }
+    edge.object.lookAt(edge.v1);
+    edge.object.scale.z = distance;
+    edge.object.position.set(
+      (edge.v1.x + edge.v2.x) / 2,
+      (edge.v1.y + edge.v2.y) / 2,
+      (edge.v1.z + edge.v2.z) / 2,
+    );
+  }
   
   // renderer.setAnimationLoop(render);
   requestAnimationFrame(animate);
