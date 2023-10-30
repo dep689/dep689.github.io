@@ -300,13 +300,14 @@ function intersectObjects(controller) {
 }
 
 function cleanIntersected() {
+  intersected.length = 0;
 
-  while (intersected.length) {
+  // while (intersected.length) {
 
-    const object = intersected.pop();
-    // object.material.emissive.r = 0;
+  //   const object = intersected.pop();
+  //   // object.material.emissive.r = 0;
 
-  }
+  // }
 
 }
 
