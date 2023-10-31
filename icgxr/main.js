@@ -1,21 +1,19 @@
+// https://threejs.org/examples/#webxr_xr_dragging を改造
+
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { XRButton } from "three/addons/webxr/XRButton.js";
-import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
 
 import { IntegralCirculantGraph } from "./CirculantGraph.js";
 
 let scene, camera, renderer, container;
-let controls;
 let controller1, controller2;
-let controllerGrip1, controllerGrip2;
 
 let raycaster;
 
 const intersected = [];
 const tempMatrix = new THREE.Matrix4();
 
-let group, edges;
+let group;
 
 let graph;
 
@@ -255,6 +253,7 @@ function updateEdges() {
     p1.copy(edge.v1.position);
     p2.copy(edge.v2.position);
 
+    // コントローラーが触っているときは、その分ずらす
     if (edge.v1 === controller1.userData.selected) {
       p1.applyEuler(controller1.rotation).add(controller1.position);
     }
