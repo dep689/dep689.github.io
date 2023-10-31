@@ -39,7 +39,6 @@ function initGraph() {
     graph.vertices[i].position.y = 1 + 0.3 * Math.sin(2 * i * Math.PI / graph.order);
     graph.vertices[i].position.z = -0.5;
     graph.vertices[i].name = "vertex";
-    graph.vertices[i].userData.moved = true;
   }
 
   // 辺
@@ -86,26 +85,15 @@ function init() {
   group = new THREE.Group();
   scene.add(group);
 
-  edges = new THREE.Group();
-  scene.add(edges);
-
   for (let i = 0; i < graph.order; i++) {
-    group.attach(graph.vertices[i]);
+    group.add(graph.vertices[i]);
   }
 
   for (let i = 0; i < graph.size; i++) {
-    const edge = graph.edges[i];
-
-    edges.add(edge.object);
-    
-    edge.object.scale.z = edge.v1.position.distanceTo(edge.v2.position);
-
-    // 順番変えるとバグる
-    edge.object.position.lerpVectors(edge.v1.position, edge.v2.position, 0.5);
-    edge.object.lookAt(edge.v1.position);
+    group.add(graph.edges[i].object);
   }
 
-  //
+  // renderer
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -116,6 +104,7 @@ function init() {
   document.body.appendChild(XRButton.createButton(renderer));
 
   // コントローラー
+
   controller1 = renderer.xr.getController(0);
   controller1.addEventListener('selectstart', onSelectStart);
   controller1.addEventListener('selectend', onSelectEnd);
@@ -126,7 +115,7 @@ function init() {
   controller2.addEventListener('selectend', onSelectEnd);
   scene.add(controller2);
 
-  //
+  // コントローラーから出る線
 
   const geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, - 1)]);
 
@@ -263,18 +252,6 @@ function updateEdges() {
   for (let i = 0; i < graph.size; i++) {
     const edge = graph.edges[i];
 
-    // 両端が動いてないときはスキップ
-    if (edge.v1 !== controller1.userData.selected
-      && edge.v1 !== controller2.userData.selected
-      && edge.v2 !== controller1.userData.selected
-      && edge.v2 !== controller2.userData.selected) {
-
-      continue;
-
-    }
-
-    //
-
     p1.copy(edge.v1.position);
     p2.copy(edge.v2.position);
 
@@ -299,7 +276,4 @@ function updateEdges() {
 
   }
 
-  for (let i = 0; i < graph.order; i++) {
-    graph.vertices[i].userData.moved = false;
-  }
 }
