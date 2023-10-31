@@ -24,10 +24,10 @@ animate();
 
 function initGraph() {
 
-  const vertexSize = 0.02;
-  const edgeThickness = vertexSize / 2;
+  const vertexSize = 0.01;
+  const edgeThickness = vertexSize / 4;
 
-  graph = new IntegralCirculantGraph(8, [1]);
+  graph = new IntegralCirculantGraph(24, [1, 3]);
 
   // 頂点
   graph.vertices = new Array(graph.order);
@@ -39,6 +39,7 @@ function initGraph() {
     graph.vertices[i].position.y = 1 + 0.3 * Math.sin(2 * i * Math.PI / graph.order);
     graph.vertices[i].position.z = -0.5;
     graph.vertices[i].name = "vertex";
+    graph.vertices[i].userData.moved = true;
   }
 
   // 辺
@@ -60,7 +61,6 @@ function initGraph() {
       }
     }
   }
-  updateEdges();
 
   graph.size = graph.edges.length;
 
@@ -77,14 +77,10 @@ function init() {
   scene.background = new THREE.Color(0x808080);
 
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-  camera.position.set(0, 1.6, 0);
+  camera.position.set(0, 1, 0);
 
   document.body.appendChild(XRButton.createButton(renderer));
   
-  // controls = new OrbitControls(camera, container);
-  // controls.target.set(0, 1.6, 0);
-  // controls.update();
-
   //
   
   group = new THREE.Group();
@@ -98,7 +94,15 @@ function init() {
   }
 
   for (let i = 0; i < graph.size; i++) {
-    edges.add(graph.edges[i].object);
+    const edge = graph.edges[i];
+
+    edges.add(edge.object);
+    
+    edge.object.scale.z = edge.v1.position.distanceTo(edge.v2.position);
+
+    // 順番変えるとバグる
+    edge.object.position.lerpVectors(edge.v1.position, edge.v2.position, 0.5);
+    edge.object.lookAt(edge.v1.position);
   }
 
   //
@@ -106,7 +110,6 @@ function init() {
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  // renderer.shadowMap.enabled = true;
   renderer.xr.enabled = true;
   container.appendChild(renderer.domElement);
 
@@ -122,16 +125,6 @@ function init() {
   controller2.addEventListener('selectstart', onSelectStart);
   controller2.addEventListener('selectend', onSelectEnd);
   scene.add(controller2);
-
-  // const controllerModelFactory = new XRControllerModelFactory();
-
-  // controllerGrip1 = renderer.xr.getControllerGrip(0);
-  // controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-  // scene.add(controllerGrip1);
-
-  // controllerGrip2 = renderer.xr.getControllerGrip(1);
-  // controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
-  // scene.add(controllerGrip2);
 
   //
 
@@ -156,9 +149,6 @@ function init() {
 
   //
 
-  console.log(group);
-  console.log(edges);
-  console.log(controller2);
 }
 
 function onWindowResize() {
@@ -180,7 +170,6 @@ function onSelectStart(event) {
   if (intersection) {
 
     const object = intersection.object;
-    // object.material.emissive.b = 1;
     controller.attach(object);
 
     controller.userData.selected = object;
@@ -198,7 +187,6 @@ function onSelectEnd(event) {
   if (controller.userData.selected !== undefined) {
 
     const object = controller.userData.selected;
-    // object.material.emissive.b = 0;
     group.attach(object);
 
     controller.userData.selected = undefined;
@@ -222,12 +210,6 @@ function getIntersections(controller) {
 
 function intersectObjects(controller) {
 
-  // Do not highlight in mobile-ar
-
-  if (controller.userData.targetRayMode === 'screen') return;
-
-  // Do not highlight when already selected
-
   if (controller.userData.selected !== undefined) return;
 
   const line = controller.getObjectByName('line');
@@ -237,7 +219,6 @@ function intersectObjects(controller) {
   if (intersection) {
 
     const object = intersection.object;
-    // object.material.emissive.r = 1;
     intersected.push(object);
 
     line.scale.z = intersection.distance;
@@ -250,14 +231,8 @@ function intersectObjects(controller) {
 }
 
 function cleanIntersected() {
+
   intersected.length = 0;
-
-  // while (intersected.length) {
-
-  //   const object = intersected.pop();
-  //   // object.material.emissive.r = 0;
-
-  // }
 
 }
 
@@ -282,12 +257,26 @@ function render() {
 
 function updateEdges() {
 
-  for (let i = 0; i < graph.size; i++) {
+  const p1 = new THREE.Vector3();
+  const p2 = new THREE.Vector3();
 
+  for (let i = 0; i < graph.size; i++) {
     const edge = graph.edges[i];
 
-    const p1 = edge.v1.position.clone();
-    const p2 = edge.v2.position.clone();
+    // 両端が動いてないときはスキップ
+    if (edge.v1 !== controller1.userData.selected
+      && edge.v1 !== controller2.userData.selected
+      && edge.v2 !== controller1.userData.selected
+      && edge.v2 !== controller2.userData.selected) {
+
+      continue;
+
+    }
+
+    //
+
+    p1.copy(edge.v1.position);
+    p2.copy(edge.v2.position);
 
     if (edge.v1 === controller1.userData.selected) {
       p1.applyEuler(controller1.rotation).add(controller1.position);
@@ -310,4 +299,7 @@ function updateEdges() {
 
   }
 
+  for (let i = 0; i < graph.order; i++) {
+    graph.vertices[i].userData.moved = false;
+  }
 }
