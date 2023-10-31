@@ -290,7 +290,7 @@ function updateEdges() {
     const p2 = edge.v2.position.clone();
 
     if (edge.v1 === controller2.userData.selected) {
-      p1.copy(controller2.position);
+      p1.add(controller2.position);
     }
 
     edge.object.scale.z = p1.distanceTo(p2);
