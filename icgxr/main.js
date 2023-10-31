@@ -27,7 +27,7 @@ function initGraph() {
   const vertexSize = 0.01;
   const edgeThickness = vertexSize / 4;
 
-  graph = new IntegralCirculantGraph(24, [1, 3]);
+  graph = new IntegralCirculantGraph(12, [1,2,3]);
 
   // 頂点
   graph.vertices = new Array(graph.order);
