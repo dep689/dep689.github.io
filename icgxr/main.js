@@ -36,8 +36,8 @@ function initGraph() {
   for (let i = 0; i < graph.order; i++) {
     graph.vertices[i] = new THREE.Mesh(vertexGeometry, vertexMaterial);
     graph.vertices[i].position.x = 0.3 * Math.cos(2 * i * Math.PI / graph.order);
-    graph.vertices[i].position.y = 1.5 + 0.3 * Math.sin(2 * i * Math.PI / graph.order);
-    graph.vertices[i].position.z = -0.6;
+    graph.vertices[i].position.y = 1 + 0.3 * Math.sin(2 * i * Math.PI / graph.order);
+    graph.vertices[i].position.z = -0.5;
     graph.vertices[i].name = "vertex";
   }
 
@@ -289,8 +289,17 @@ function updateEdges() {
     const p1 = edge.v1.position.clone();
     const p2 = edge.v2.position.clone();
 
+    if (edge.v1 === controller1.userData.selected) {
+      p1.applyEuler(controller1.rotation).add(controller1.position);
+    }
     if (edge.v1 === controller2.userData.selected) {
       p1.applyEuler(controller2.rotation).add(controller2.position);
+    }
+    if (edge.v2 === controller1.userData.selected) {
+      p2.applyEuler(controller1.rotation).add(controller1.position);
+    }
+    if (edge.v2 === controller2.userData.selected) {
+      p2.applyEuler(controller2.rotation).add(controller2.position);
     }
 
     edge.object.scale.z = p1.distanceTo(p2);
@@ -300,4 +309,5 @@ function updateEdges() {
     edge.object.lookAt(p1);
 
   }
+
 }
