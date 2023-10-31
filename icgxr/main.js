@@ -286,17 +286,17 @@ function updateEdges() {
 
     const edge = graph.edges[i];
 
-    let p1 = edge.v1.position;
-    let p2 = edge.v2.position;
+    const p1 = edge.v1.position.clone();
+    const p2 = edge.v2.position.clone();
 
     if (edge.v1 === controller2.userData.selected) {
-      p1.add(controller2.position);
+      p1.copy(controller2.position);
     }
 
     edge.object.scale.z = p1.distanceTo(p2);
 
     // 順番変えるとバグる
-    edge.object.position.addVectors(p1, p2).multiplyScalar(0.5);
+    edge.object.position.lerpVectors(p1, p2, 0.5);
     edge.object.lookAt(p1);
 
   }
